@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-tool-button',
-  templateUrl: './tool-button.component.html',
-  styleUrls: ['./tool-button.component.scss']
+  templateUrl: './toolbutton.component.html',
+  styleUrls: ['./toolbutton.component.scss']
 })
 export class ToolButtonComponent implements OnInit {
 
