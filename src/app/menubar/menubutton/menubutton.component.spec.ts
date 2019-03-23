@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MenuButtonComponent } from './menu-button.component';
+import { MenuButtonComponent } from './menubutton.component';
 
 describe('MenuButtonComponent', () => {
   let component: MenuButtonComponent;

@@ -9,12 +9,12 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import * as SolidSvg from '@fortawesome/free-solid-svg-icons';
 import * as RegularSvg from '@fortawesome/free-regular-svg-icons';
 import { MenubarComponent } from './menubar/menubar.component';
-import { CenterPaneComponent } from './center-pane/center-pane.component';
+import { CenterPaneComponent } from './centerpane/centerpane.component';
 import { BottombarComponent } from './bottombar/bottombar.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
-import { ToolButtonComponent } from './toolbar/tool-button/tool-button.component';
-import { MenuButtonComponent } from './menubar/menu-button/menu-button.component';
-import { BottombarButtonComponent } from './bottombar/bottombar-button/bottombar-button.component';
+import { ToolButtonComponent } from './toolbar/toolbutton/toolbutton.component';
+import { MenuButtonComponent } from './menubar/menubutton/menubutton.component';
+import { BottombarButtonComponent } from './bottombar/bottombarbutton/bottombarbutton.component';
 
 @NgModule({
   declarations: [

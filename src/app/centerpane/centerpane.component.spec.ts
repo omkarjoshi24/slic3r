@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CenterPaneComponent } from './center-pane.component';
+import { CenterPaneComponent } from './centerpane.component';
 
 describe('CenterPaneComponent', () => {
   let component: CenterPaneComponent;

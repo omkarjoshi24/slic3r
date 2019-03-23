@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BottombarButtonComponent } from './bottombar-button.component';
+import { BottombarButtonComponent } from './bottombarbutton.component';
 
 describe('BottombarButtonComponent', () => {
   let component: BottombarButtonComponent;
