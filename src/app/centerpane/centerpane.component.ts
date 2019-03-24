@@ -19,7 +19,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ThreeEngineService } from '../threeengine/threeengine.service';
 
-
 @Component({
   selector: 'app-center-pane',
   templateUrl: './centerpane.component.html',
