@@ -14,6 +14,7 @@
  * HISTORY:
  * Date      	By	Comments
  * ----------	---	----------------------------------------------------------
+ * 2019/03/24 11:02:08 am	OJ
  */
 
 import { Component, OnInit } from '@angular/core';
@@ -25,12 +26,19 @@ import { ThreeEngineService } from '../threeengine/threeengine.service';
   styleUrls: ['./centerpane.component.scss']
 })
 export class CenterPaneComponent implements OnInit {
-  private canvasEleId = 'renderCanvas';
+  // HTML canvas element id
+  private canvasEleId = 'centerPaneCanvas';
 
+  /**
+   * Creates an instance of center pane component.
+   * @param threeEngineServ instance of a three engin service
+   */
   constructor(private threeEngineServ: ThreeEngineService) { }
 
+  /**
+   * on init
+   */
   ngOnInit() {
     this.threeEngineServ.createScene(this.canvasEleId);
   }
-
 }
