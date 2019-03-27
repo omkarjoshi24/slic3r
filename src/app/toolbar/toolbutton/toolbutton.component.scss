@@ -1,0 +1,22 @@
+.shadow-button {
+    background-color: white;
+    border: 2px solid grey;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 10px 0 rgba(0, 0, 0, 0.19);
+    height: 50px;
+    margin-bottom: 10px;
+    font-size: 24px;
+    cursor: pointer;
+    &.toolbutton-oval {
+        width: 70px;
+    }
+    &.toolbutton-circle {
+        width: 50px;
+    }
+    &:focus {
+        outline: 0;
+    }
+    &:active {
+        box-shadow: none;
+    }
+}

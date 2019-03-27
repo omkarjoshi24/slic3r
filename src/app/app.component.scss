@@ -1,0 +1,13 @@
+.app-container {
+    position: relative;
+    .center-pane {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+    }
+    .toolbar {
+        position: absolute;
+        top: 120px;
+        left: 0px;
+    }
+}

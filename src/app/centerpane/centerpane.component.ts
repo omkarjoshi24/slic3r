@@ -3,18 +3,19 @@
  * Project: slic3r
  * Created Date: Friday, March 22nd 2019, 5:37:53 pm
  * Author: Omkar Joshi
+ * Desription:
+ * Center pane
+ * 
  * -----
  * Last Modified: Sun Mar 24 2019
  * Modified By: Omkar Joshi
  * -----
  * Copyright (c) 2019 Omkar Joshi
  * 
- * <<licensetext>>
  * -----
  * HISTORY:
- * Date      	By	Comments
- * ----------	---	----------------------------------------------------------
- * 2019/03/24 11:02:08 am	OJ
+ * Date                 			By   		Comments
+ * ---------------------	-----	----------------------------------------------------------
  */
 
 import { Component, OnInit } from '@angular/core';
@@ -36,9 +37,10 @@ export class CenterPaneComponent implements OnInit {
   constructor(private threeEngineServ: ThreeEngineService) { }
 
   /**
-   * on init
+   * on init create a scene and render it
    */
   ngOnInit() {
     this.threeEngineServ.createScene(this.canvasEleId);
+    this.threeEngineServ.animate();
   }
 }

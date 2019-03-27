@@ -3,8 +3,11 @@
  * Project: slic3r
  * Created Date: Friday, March 22nd 2019, 5:55:20 pm
  * Author: Omkar Joshi
+ * Desription:
+ * Template for Toolbar Button coponent
+ * 
  * -----
- * Last Modified: Sun Mar 24 2019
+ * Last Modified: Mon Mar 25 2019
  * Modified By: Omkar Joshi
  * -----
  * Copyright (c) 2019 Omkar Joshi
@@ -15,6 +18,8 @@
  * Date      	By	Comments
  * ----------	---	----------------------------------------------------------
 -->
-<p>
-    tool-button works!
-</p>
+<div>
+    <button class="shadow-button" (click)="onButtonClicked()" [ngClass]="{'toolbutton-oval': type === 'oval', 'toolbutton-circle': type === 'circle'}">
+        <fa-icon [icon]="icon"></fa-icon>
+    </button>
+</div>

@@ -24,8 +24,8 @@ import { AppComponent } from './app.component';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import * as SolidSvg from '@fortawesome/free-solid-svg-icons';
-import * as RegularSvg from '@fortawesome/free-regular-svg-icons';
+import { faPlus, faPencilAlt, faHandPointLeft, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+// import * as RegularSvg from '@fortawesome/free-regular-svg-icons';
 import { MenubarComponent } from './menubar/menubar.component';
 import { CenterPaneComponent } from './centerpane/centerpane.component';
 import { BottombarComponent } from './bottombar/bottombar.component';
@@ -55,6 +55,6 @@ import { BottombarButtonComponent } from './bottombar/bottombarbutton/bottombarb
 })
 export class AppModule {
   constructor() {
-    // library.add(SolidSvg, farSquare, farCheckSquare, faStackOverflow, faGithub, faMedium);
+    library.add(faPlus, faPencilAlt, faHandPointLeft, faTrashAlt);
   }
 }
