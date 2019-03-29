@@ -7,7 +7,7 @@
  * Service to provide Three js functionality
  *
  * -----
- * Last Modified: Tue Mar 26 2019
+ * Last Modified: Thu Mar 28 2019
  * Modified By: Omkar Joshi
  * -----
  * Copyright (c) 2019 Omkar Joshi
@@ -32,14 +32,25 @@ import * as THREE from 'three-full';
 
 export class ThreeEngineService {
 
-  private editorCanvas: HTMLCanvasElement;
-  private editorRenderer: THREE.WebGLRenderer;
-  private editorCamera: THREE.PerspectiveCamera;
-  private editorScene: THREE.Scene;
-  private editorLight: THREE.AmbientLight;
-  private editorGrid: THREE.GridHelper;
-  private editorCameraController: THREE.OrbitControls;
-  private editorTransformController: THREE.TransformControls;
+  public editorCanvas: HTMLCanvasElement;
+  public editorRenderer: THREE.WebGLRenderer;
+  public editorCamera: THREE.PerspectiveCamera;
+  public editorScene: THREE.Scene;
+  public editorLight: THREE.AmbientLight;
+  public editorGrid: THREE.GridHelper;
+  public editorCameraController: THREE.OrbitControls;
+  public editorTransformController: THREE.TransformControls;
+  public editorSelectionBox = THREE.BoxHelper;
+
+  // public added3DObjs: THREE.Mesh[] = [];
+  public helper3DObjs = {};
+  public added3DObjs: THREE.Object3D[] = [];
+
+  public selected3DObj: THREE.Object3D;
+
+  private obj3DPositionOnDwn: any = null;
+  private obj3DRotationOnDwn: any = null;
+  private obj3DScaleOnDwn: any = null;
 
   private perspectiveSwitcherCanvas: HTMLCanvasElement;
   private perspectiveSwitcherRenderer: THREE.WebGLRenderer;
@@ -67,6 +78,8 @@ export class ThreeEngineService {
     this.editorCamera.position.set(20, 40, 70);
     // set camera to look at scene
     this.editorCamera.lookAt(this.editorScene.position);
+    // add camera to the scene
+    this.editorScene.add(this.editorCamera);
     // create new ambient light
     this.editorLight = new THREE.AmbientLight(0x404040);
     // add newly created light to scene
@@ -93,6 +106,16 @@ export class ThreeEngineService {
     this.editorCameraController.target.set(0, 0, 0);
     // enable damping to false to avoid innertia effect
     this.editorCameraController.enableDamping = false;
+    this.editorSelectionBox = new THREE.BoxHelper();
+    this.editorSelectionBox.material.depthTest = false;
+    this.editorSelectionBox.material.transparent = true;
+    this.editorSelectionBox.visible = false;
+    this.editorScene.add(this.editorSelectionBox);
+
+    this.helper3DObjs[this.editorCamera.uuid] = this.editorCamera;
+    this.helper3DObjs[this.editorLight.uuid] = this.editorLight;
+    this.helper3DObjs[this.editorGrid.uuid] = this.editorGrid;
+    this.helper3DObjs[this.editorSelectionBox.uuid] = this.editorSelectionBox;
   }
 
   /**
@@ -130,27 +153,12 @@ export class ThreeEngineService {
   }
 
   /**
-   * Resizes renderer
-   */
-  resize(): void {
-    let width = window.innerWidth; // store window innerwidth
-    let height = window.innerHeight;// store window innerHeight
-
-    // set aspect ration of the camera using new width and height
-    this.editorCamera.aspect = width / height;
-    // update camera projection matrix
-    this.editorCamera.updateProjectionMatrix();
-    // set new size to renderer
-    this.editorRenderer.setSize(width, height);
-  }
-
-  /**
    * Add3s dobject
    * @param type (string) type of the 3D object to add to the scene
    */
   add3DObject(type: string): void {
     // create new 3D object by type
-    let generated3DObj: THREE.Mesh = this.get3DObjByType(type);
+    let generated3DObj: THREE.Object3D = this.get3DObjByType(type);
     // calculate xyz dimentions of generated 3D object
     generated3DObj.geometry.computeBoundingBox();
     // calculate y position of the generated 3D object in a scene
@@ -159,6 +167,38 @@ export class ThreeEngineService {
     generated3DObj.position.set(0, generated3DObjY, 0);
     // add created 3D object to the scene
     this.editorScene.add(generated3DObj);
+
+    generated3DObj.traverse( (child: any) => {
+      this.added3DObjs.push(child);
+    });
+  }
+
+  remove3DObject(obj3DToRemove: THREE.Object3D): void {
+    this.editorScene.remove(obj3DToRemove);
+  }
+
+  select3DObject(obj3DToSelect: THREE.Object3D): void {
+    this.editorSelectionBox.visible = false;
+    this.stopTransform();
+    if (obj3DToSelect !== null &&
+        obj3DToSelect !== this.editorScene &&
+        !this.isHelperObj(obj3DToSelect)) {
+          let verificationBox: THREE.Box3 = new THREE.Box3();
+          verificationBox.setFromObject(obj3DToSelect);
+          if (verificationBox.isEmpty() === false) {
+            this.editorSelectionBox.setFromObject(obj3DToSelect);
+            this.editorSelectionBox.visible = true;
+          }
+          // this.editorTransformController.attach(obj3DToSelect);
+    }
+    this.doRender();
+  }
+
+  isHelperObj(obj3D: THREE.Object3D): boolean {
+    if (this.helper3DObjs[obj3D.uuid]) {
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -207,12 +247,35 @@ export class ThreeEngineService {
   }
 
   stopTransform(): void {
-    this.editorCameraController.enable = false;
-    this.editorTransformController.removeEventListener('change', this.doRender);
-    this.editorTransformController.removeEventListener('dragging-changed', (event) => {
-      this.editorCameraController.enable = !event.value;
-    });
+    if (this.editorCameraController) {
+      this.editorCameraController.enable = true;
+    }
+    if (this.editorTransformController) {
+      this.editorTransformController.detach();
+      this.editorTransformController.removeEventListener('change', this.doRender);
+      this.editorTransformController.removeEventListener('dragging-changed', (event) => {
+        if (this.editorCameraController) {
+          this.editorCameraController.enable = !event.value;
+        }
+      });
+    }
   }
+
+  /**
+   * Resizes renderer
+   */
+  private resize(): void {
+    let width = window.innerWidth; // store window innerwidth
+    let height = window.innerHeight;// store window innerHeight
+
+    // set aspect ration of the camera using new width and height
+    this.editorCamera.aspect = width / height;
+    // update camera projection matrix
+    this.editorCamera.updateProjectionMatrix();
+    // set new size to renderer
+    this.editorRenderer.setSize(width, height);
+  }
+
   /**
    * Creates perspective switcher and it to HTML canvas
    * @param eleId (string) element id of a HTML canvas
