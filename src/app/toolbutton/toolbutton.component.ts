@@ -7,7 +7,7 @@
  * Toolbar button To perform various actions on scene
  * 
  * -----
- * Last Modified: Mon Mar 25 2019
+ * Last Modified: Sun Mar 31 2019
  * Modified By: Omkar Joshi
  * -----
  * Copyright (c) 2019 Omkar Joshi
@@ -19,7 +19,7 @@
  */
 
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { icon } from '@fortawesome/fontawesome-svg-core';
+import { ThreeEngineService } from '../threeengine/threeengine.service';
 
 @Component({
   selector: 'app-tool-button',
@@ -45,6 +45,11 @@ export class ToolButtonComponent implements OnInit {
   @Input() type: string;
 
   /**
+   * condotion for hiding this this button
+   */
+  @Input() hideCondition: string = 'true';
+
+  /**
    * @emits button click event emitter trigger when tool button is clicked
    */
   @Output() buttonClicked: EventEmitter<string> = new EventEmitter();
@@ -52,16 +57,23 @@ export class ToolButtonComponent implements OnInit {
   /**
    * Creates an instance of tool button component.
    */
-  constructor() { }
+  constructor(private threeEngineService: ThreeEngineService) { }
 
   /**
    * on init
    */
   ngOnInit() {
+
+  }
+
+  isHidden(): boolean {
+    if (this.hideCondition !== undefined && this.hideCondition !== null && eval(this.hideCondition) === true) {
+      return true;
+    }
+    return false;
   }
 
   onButtonClicked() {
     this.buttonClicked.emit(this.dataid);
   }
-
 }

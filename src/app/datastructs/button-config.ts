@@ -8,7 +8,7 @@
  * providing button configuration to all toolbar, menubar and bottom bar
  * 
  * -----
- * Last Modified: Mon Mar 25 2019
+ * Last Modified: Sun Mar 31 2019
  * Modified By: Omkar Joshi
  * -----
  * Copyright (c) 2019 Omkar Joshi
@@ -19,10 +19,12 @@
  * ---------------------	-----	----------------------------------------------------------
  */
 
-export class ButtonConfig {
+export interface ButtonConfig {
     id: string;
     label: string;
     icon: string[];
     type: string;
     parent: string;
+    hideCondition?: string;
+    children?: ButtonConfig[];
 }

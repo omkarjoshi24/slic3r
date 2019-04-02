@@ -7,7 +7,7 @@
  * Center pane
  * 
  * -----
- * Last Modified: Thu Mar 28 2019
+ * Last Modified: Fri Mar 29 2019
  * Modified By: Omkar Joshi
  * -----
  * Copyright (c) 2019 Omkar Joshi
@@ -69,10 +69,13 @@ export class CenterPaneComponent implements OnInit {
 
   private handleClick(): void {
     if (this.onMouseDownPosition.distanceTo(this.onMouseUpPosition) === 0) {
-      let intersectObjs: any[] = this.getIntersectingObjByPoint(this.onMouseUpPosition, this.threeEngineServ.added3DObjs);
+      let rayCastingOnObjs = this.threeEngineServ.added3DObjs.concat( [ this.threeEngineServ.editorScene ] );
+      let intersectObjs: any[] = this.getIntersectingObjByPoint(this.onMouseUpPosition, this.threeEngineServ.editorScene.children);
       if (intersectObjs && intersectObjs.length > 0) {
         let obj3dClicked: THREE.Object3D = intersectObjs[0].object;
         this.threeEngineServ.select3DObject(obj3dClicked);
+      } else {
+        this.threeEngineServ.select3DObject(null);
       }
     }
   }

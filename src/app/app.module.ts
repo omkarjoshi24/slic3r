@@ -4,7 +4,7 @@
  * Created Date: Thursday, March 21st 2019, 8:16:57 pm
  * Author: Omkar Joshi
  * -----
- * Last Modified: Sun Mar 24 2019
+ * Last Modified: Mon Apr 01 2019
  * Modified By: Omkar Joshi
  * -----
  * Copyright (c) 2019 Omkar Joshi
@@ -24,15 +24,24 @@ import { AppComponent } from './app.component';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faPlus, faPencilAlt, faHandPointLeft, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faPlus,
+         faPencilAlt,
+         faHandPointLeft,
+         faTrashAlt,
+         faExpand,
+         faArrowLeft,
+         faCube,
+         faCircle,
+         faCompactDisc,
+         faExpandArrowsAlt,
+         faArrowsAltH,
+         faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 // import * as RegularSvg from '@fortawesome/free-regular-svg-icons';
 import { MenubarComponent } from './menubar/menubar.component';
 import { CenterPaneComponent } from './centerpane/centerpane.component';
 import { BottombarComponent } from './bottombar/bottombar.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
-import { ToolButtonComponent } from './toolbar/toolbutton/toolbutton.component';
-import { MenuButtonComponent } from './menubar/menubutton/menubutton.component';
-import { BottombarButtonComponent } from './bottombar/bottombarbutton/bottombarbutton.component';
+import { ToolButtonComponent } from './toolbutton/toolbutton.component';
 
 @NgModule({
   declarations: [
@@ -41,9 +50,7 @@ import { BottombarButtonComponent } from './bottombar/bottombarbutton/bottombarb
     CenterPaneComponent,
     BottombarComponent,
     ToolbarComponent,
-    ToolButtonComponent,
-    MenuButtonComponent,
-    BottombarButtonComponent
+    ToolButtonComponent
   ],
   imports: [
     BrowserModule,
@@ -55,6 +62,17 @@ import { BottombarButtonComponent } from './bottombar/bottombarbutton/bottombarb
 })
 export class AppModule {
   constructor() {
-    library.add(faPlus, faPencilAlt, faHandPointLeft, faTrashAlt);
+    library.add(faPlus,
+                faPencilAlt,
+                faHandPointLeft,
+                faTrashAlt,
+                faExpand,
+                faArrowLeft,
+                faCube,
+                faCircle,
+                faCompactDisc,
+                faExpandArrowsAlt,
+                faArrowsAltH,
+                faSyncAlt);
   }
 }

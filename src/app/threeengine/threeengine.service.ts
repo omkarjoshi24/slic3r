@@ -7,7 +7,7 @@
  * Service to provide Three js functionality
  *
  * -----
- * Last Modified: Thu Mar 28 2019
+ * Last Modified: Mon Apr 01 2019
  * Modified By: Omkar Joshi
  * -----
  * Copyright (c) 2019 Omkar Joshi
@@ -46,17 +46,10 @@ export class ThreeEngineService {
   public helper3DObjs = {};
   public added3DObjs: THREE.Object3D[] = [];
 
-  public selected3DObj: THREE.Object3D;
+  public selected3DObj: THREE.Object3D = null;
 
-  private obj3DPositionOnDwn: any = null;
-  private obj3DRotationOnDwn: any = null;
-  private obj3DScaleOnDwn: any = null;
-
-  private perspectiveSwitcherCanvas: HTMLCanvasElement;
-  private perspectiveSwitcherRenderer: THREE.WebGLRenderer;
-  private perspectiveSwitcherCamera: THREE.PerspectiveCamera;
-  private perspectiveSwitcherScene: THREE.Scene;
-  private perspectiveSwitcherLight: THREE.AmbientLight;
+  private boundTCChanged = event => this.tcChanged();
+  private boundTCDraggingChanged = event => this.tcDraggingChanged(event);
 
   /**
    * Creates an instance of three engine service.
@@ -99,13 +92,13 @@ export class ThreeEngineService {
     this.editorGrid.position.set(0, 0, 0);
     // add editor grid to the scene
     this.editorScene.add(this.editorGrid);
-
     // create oribit controls to let user control camera
     this.editorCameraController = new THREE.OrbitControls(this.editorCamera, this.editorRenderer.domElement);
     // set Oribit controls's target position
     this.editorCameraController.target.set(0, 0, 0);
     // enable damping to false to avoid innertia effect
     this.editorCameraController.enableDamping = false;
+    this.editorCameraController.update();
     this.editorSelectionBox = new THREE.BoxHelper();
     this.editorSelectionBox.material.depthTest = false;
     this.editorSelectionBox.material.transparent = true;
@@ -141,9 +134,9 @@ export class ThreeEngineService {
     requestAnimationFrame(() => {
       this.render();
     });
+    this.editorCameraController.update();
     this.doRender();
   }
-
   /**
    * actually excutes method render of renderer
    */
@@ -168,17 +161,22 @@ export class ThreeEngineService {
     // add created 3D object to the scene
     this.editorScene.add(generated3DObj);
 
+    this.select3DObject(generated3DObj);
+
     generated3DObj.traverse( (child: any) => {
       this.added3DObjs.push(child);
     });
   }
 
   remove3DObject(obj3DToRemove: THREE.Object3D): void {
+    this.select3DObject(null);
     this.editorScene.remove(obj3DToRemove);
   }
 
   select3DObject(obj3DToSelect: THREE.Object3D): void {
     this.editorSelectionBox.visible = false;
+    this.stopTransform();
+    this.selected3DObj = null;
     this.stopTransform();
     if (obj3DToSelect !== null &&
         obj3DToSelect !== this.editorScene &&
@@ -188,8 +186,8 @@ export class ThreeEngineService {
           if (verificationBox.isEmpty() === false) {
             this.editorSelectionBox.setFromObject(obj3DToSelect);
             this.editorSelectionBox.visible = true;
+            this.selected3DObj = obj3DToSelect;
           }
-          // this.editorTransformController.attach(obj3DToSelect);
     }
     this.doRender();
   }
@@ -237,12 +235,11 @@ export class ThreeEngineService {
     if (this.editorTransformController === undefined || this.editorTransformController === null) {
       this.editorTransformController = new THREE.TransformControls(this.editorCamera, this.editorRenderer.domElement);
     }
-    this.editorTransformController.addEventListener('change', this.doRender);
-    this.editorTransformController.addEventListener('dragging-changed', (event) => {
-      this.editorCameraController.enable = !event.value;
-    });
+    this.editorTransformController.addEventListener('change', this.boundTCChanged);
+    this.editorTransformController.addEventListener('dragging-changed', this.boundTCDraggingChanged);
     this.editorTransformController.enable = true;
     this.editorTransformController.attach(obj3D);
+    this.editorScene.add(this.editorTransformController);
     this.editorTransformController.setMode(type);
   }
 
@@ -252,12 +249,8 @@ export class ThreeEngineService {
     }
     if (this.editorTransformController) {
       this.editorTransformController.detach();
-      this.editorTransformController.removeEventListener('change', this.doRender);
-      this.editorTransformController.removeEventListener('dragging-changed', (event) => {
-        if (this.editorCameraController) {
-          this.editorCameraController.enable = !event.value;
-        }
-      });
+      this.editorTransformController.removeEventListener('change', this.boundTCChanged);
+      this.editorTransformController.removeEventListener('dragging-changed', this.boundTCDraggingChanged);
     }
   }
 
@@ -274,6 +267,23 @@ export class ThreeEngineService {
     this.editorCamera.updateProjectionMatrix();
     // set new size to renderer
     this.editorRenderer.setSize(width, height);
+  }
+
+  tcChanged(): void {
+    let obj3D = this.editorTransformController.object;
+    if (obj3D !== undefined) {
+      this.editorSelectionBox.setFromObject(obj3D);
+    }
+    this.doRender();
+  }
+
+  tcDraggingChanged(event): void {
+    if (this.editorCameraController) {
+      this.editorCameraController.enabled = !event.value;
+      console.log('event.value: ' + event.value);
+      console.log('orbit controller enabled? ' + this.editorCameraController.enable);
+
+    }
   }
 
   /**
