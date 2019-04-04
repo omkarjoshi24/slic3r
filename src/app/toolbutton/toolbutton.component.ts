@@ -7,7 +7,7 @@
  * Toolbar button To perform various actions on scene
  * 
  * -----
- * Last Modified: Sun Mar 31 2019
+ * Last Modified: Wed Apr 03 2019
  * Modified By: Omkar Joshi
  * -----
  * Copyright (c) 2019 Omkar Joshi
@@ -43,6 +43,8 @@ export class ToolButtonComponent implements OnInit {
    * type of a tool button
    */
   @Input() type: string;
+
+  @Input() isFontAwesomeIcon: boolean;
 
   /**
    * condotion for hiding this this button

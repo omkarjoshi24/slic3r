@@ -4,7 +4,7 @@
  * Created Date: Friday, March 22nd 2019, 5:41:26 pm
  * Author: Omkar Joshi
  * -----
- * Last Modified: Mon Apr 01 2019
+ * Last Modified: Wed Apr 03 2019
  * Modified By: Omkar Joshi
  * -----
  * Copyright (c) 2019 Omkar Joshi
@@ -29,33 +29,32 @@ export class ToolbarComponent implements OnInit {
   private buttons: ButtonConfig[] = [
     { id: 'addButton',
       label: 'Add',
-      icon: ['fas', 'plus'],
+      icon: ['icon-3d-add'],
       type: 'circle',
       parent: 'toolbar',
       children: [
-        { id: 'backButton', label: 'Back', icon: ['fas', 'arrow-left'], type: 'circle', parent: 'addButton' },
-        { id: 'cubeButton', label: 'Cube', icon: ['fas', 'cube'], type: 'circle', parent: 'addButton' },
-        { id: 'sphereButton', label: 'Sphere', icon: ['fas', 'circle'], type: 'circle', parent: 'addButton' },
-        { id: 'cylinderButton', label: 'Cylinder', icon: ['fas', 'compact-disc'], type: 'circle', parent: 'addButton' },
-        { id: 'icosahedronButton', label: 'Icosahedron', icon: ['fas', 'compact-disc'], type: 'circle', parent: 'addButton' },
-        { id: 'torusButton', label: 'Icosahedron', icon: ['fas', 'compact-disc'], type: 'circle', parent: 'addButton' },
-        { id: 'coneButton', label: 'Cone', icon: ['fas', 'compact-disc'], type: 'circle', parent: 'addButton' },
-        { id: 'dodecahedronButton', label: 'Dodecahedron', icon: ['fas', 'compact-disc'], type: 'circle', parent: 'addButton' },
-      ]},
-    { id: 'removeButton', label: 'Delete', icon: ['fas', 'trash-alt'], type: 'circle', parent: 'toolbar',
-      hideCondition: 'this.threeEngineService.selected3DObj === null' },
-    { id: 'transformButton',
-      label: 'Transform',
-      icon: ['fas', 'expand'],
-      type: 'circle',
-      parent: 'toolbar',
-      children: [
-        { id: 'backButton', label: 'Back', icon: ['fas', 'arrow-left'], type: 'circle', parent: 'addButton' },
-        { id: 'translateButton', label: 'Translate', icon: ['fas', 'expand-arrows-alt'], type: 'circle', parent: 'transformButton'},
-        { id: 'scaleButton', label: 'Scale', icon: ['fas', 'arrows-alt-h'], type: 'circle', parent: 'transformButton'},
-        { id: 'rotateButton', label: 'Rotate', icon: ['fas', 'sync-alt'], type: 'circle', parent: 'transformButton'}
+        { id: 'backButton', label: 'Back', icon: ['icon-3d-back'], type: 'circle', parent: 'addButton', isFontAwesomeIcon: false },
+        { id: 'cubeButton', label: 'Cube', icon: ['icon-3d-cube'], type: 'circle', parent: 'addButton', isFontAwesomeIcon: false },
+        { id: 'sphereButton', label: 'Sphere', icon: ['icon-3d-sphere'], type: 'circle', parent: 'addButton', isFontAwesomeIcon: false },
+        { id: 'cylinderButton', label: 'Cylinder', icon: ['icon-3d-cylinder'], type: 'circle', 
+          parent: 'addButton', isFontAwesomeIcon: false },
+        { id: 'icosahedronButton', label: 'Icosahedron', icon: ['icon-3d-icosahedron'], type: 'circle', 
+          parent: 'addButton', isFontAwesomeIcon: false },
+        { id: 'torusButton', label: 'Torus', icon: ['icon-3d-torus'], type: 'circle', parent: 'addButton', isFontAwesomeIcon: false },
+        { id: 'coneButton', label: 'Cone', icon: ['icon-3d-cone'], type: 'circle', parent: 'addButton', isFontAwesomeIcon: false },
+        { id: 'dodecahedronButton', label: 'Dodecahedron', icon: ['icon-3d-dodecahedron'], type: 'circle', 
+          parent: 'addButton', isFontAwesomeIcon: false },
       ],
-      hideCondition: 'this.threeEngineService.selected3DObj === null' }
+      isFontAwesomeIcon: false 
+    },
+    { id: 'translateButton', label: 'Translate', icon: ['icon-3d-translate'], type: 'circle',
+      parent: 'toolbar', isFontAwesomeIcon: false, hideCondition: 'this.threeEngineService.selected3DObj === null' },
+    { id: 'scaleButton', label: 'Scale', icon: ['icon-3d-scale'], type: 'circle',
+      parent: 'toolbar', isFontAwesomeIcon: false, hideCondition: 'this.threeEngineService.selected3DObj === null' },
+    { id: 'rotateButton', label: 'Rotate', icon: ['icon-3d-rotate'], type: 'circle',
+      parent: 'toolbar', isFontAwesomeIcon: false, hideCondition: 'this.threeEngineService.selected3DObj === null' },
+    { id: 'removeButton', label: 'Delete', icon: ['icon-3d-trash'], type: 'circle', parent: 'toolbar',
+      hideCondition: 'this.threeEngineService.selected3DObj === null', isFontAwesomeIcon: false }
   ];
 
   private chidrenVisible = false;
@@ -84,18 +83,28 @@ export class ToolbarComponent implements OnInit {
           break;
         case 'cubeButton':
           this.threeEngineService.add3DObject('cube');
+          this.chidrenVisible = false;
+          this.visibleChildren = [];
           break;
         case 'sphereButton':
           this.threeEngineService.add3DObject('sphere');
+          this.chidrenVisible = false;
+          this.visibleChildren = [];
           break;
         case 'translateButton':
           this.threeEngineService.startTransform('translate', this.threeEngineService.selected3DObj);
+          this.chidrenVisible = false;
+          this.visibleChildren = [];
           break;
         case 'scaleButton':
           this.threeEngineService.startTransform('scale', this.threeEngineService.selected3DObj);
+          this.chidrenVisible = false;
+          this.visibleChildren = [];
           break;
         case 'rotateButton':
           this.threeEngineService.startTransform('rotate', this.threeEngineService.selected3DObj);
+          this.chidrenVisible = false;
+          this.visibleChildren = [];
           break;
       }
     }

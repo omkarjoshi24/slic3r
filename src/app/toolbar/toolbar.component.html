@@ -4,7 +4,7 @@
  * Created Date: Friday, March 22nd 2019, 5:41:26 pm
  * Author: Omkar Joshi
  * -----
- * Last Modified: Mon Apr 01 2019
+ * Last Modified: Wed Apr 03 2019
  * Modified By: Omkar Joshi
  * -----
  * Copyright (c) 2019 Omkar Joshi
@@ -18,12 +18,12 @@
 <div class="toolbar-container">
     <ul class="toolbutton-list" [hidden]="chidrenVisible">
         <li *ngFor="let btnConfig of buttons">
-            <app-tool-button [dataid]="btnConfig.id" [label]="btnConfig.label" [icon]="btnConfig.icon" [type]="btnConfig.type" [hideCondition]="btnConfig.hideCondition" (buttonClicked)="toolButtonClicked($event)"></app-tool-button>
+            <app-tool-button [dataid]="btnConfig.id" [label]="btnConfig.label" [icon]="btnConfig.icon" [type]="btnConfig.type" [isFontAwesomeIcon]="btnConfig.isFontAwesomeIcon" [hideCondition]="btnConfig.hideCondition" (buttonClicked)="toolButtonClicked($event)"></app-tool-button>
         </li>
     </ul>
     <ul class="toolbutton-list" *ngIf="chidrenVisible">
         <li *ngFor="let childBtnConfig of visibleChildren">
-            <app-tool-button [dataid]="childBtnConfig.id" [label]="childBtnConfig.label" [icon]="childBtnConfig.icon" [type]="childBtnConfig.type" [hideCondition]="childBtnConfig.hideCondition" (buttonClicked)="toolButtonClicked($event)"></app-tool-button>
+            <app-tool-button [dataid]="childBtnConfig.id" [label]="childBtnConfig.label" [icon]="childBtnConfig.icon" [type]="childBtnConfig.type" [isFontAwesomeIcon]="childBtnConfig.isFontAwesomeIcon" [hideCondition]="childBtnConfig.hideCondition" (buttonClicked)="toolButtonClicked($event)"></app-tool-button>
         </li>
     </ul>
 </div>
