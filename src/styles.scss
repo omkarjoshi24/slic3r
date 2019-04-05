@@ -2,18 +2,18 @@
 
 @import "variables";
 @font-face {
-    font-family: '#{$icon3d-font-family}';
-    src: url('#{$icon3d-font-path}/#{$icon3d-font-family}.ttf?vtbxpg') format('truetype'),
-    url('#{$icon3d-font-path}/#{$icon3d-font-family}.woff?vtbxpg') format('woff'),
-    url('#{$icon3d-font-path}/#{$icon3d-font-family}.svg?vtbxpg##{$icon3d-font-family}') format('svg');
+    font-family: '#{$slic3r-icon-font-family}';
+    src: url('#{$slic3r-icon-font-path}/#{$slic3r-icon-font-family}.ttf?vtbxpg') format('truetype'),
+    url('#{$slic3r-icon-font-path}/#{$slic3r-icon-font-family}.woff?vtbxpg') format('woff'),
+    url('#{$slic3r-icon-font-path}/#{$slic3r-icon-font-family}.svg?vtbxpg##{$slic3r-icon-font-family}') format('svg');
     font-weight: normal;
     font-style: normal;
 }
 
-[class^="icon-3d-"],
-[class*=" icon-3d-"] {
+[class^="slic3r-icon-3d-"],
+[class*=" slic3r-icon-3d-"] {
     /* use !important to prevent issues with browser extensions that change fonts */
-    font-family: '#{$icon3d-font-family}' !important;
+    font-family: '#{$slic3r-icon-font-family}' !important;
     speak: none;
     font-style: normal;
     font-weight: normal;
@@ -25,86 +25,146 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-3d-add {
+.slic3r-icon-3d-cube {
     &:before {
-        content: $icon-3d-add;
+        content: $slic3r-icon-3d-cube;
     }
 }
 
-.icon-3d-back {
+.slic3r-icon-3d-cylinder {
     &:before {
-        content: $icon-3d-back;
+        content: $slic3r-icon-3d-cylinder;
     }
 }
 
-.icon-3d-cone {
+.slic3r-icon-3d-sphere {
     &:before {
-        content: $icon-3d-cone;
+        content: $slic3r-icon-3d-sphere;
     }
 }
 
-.icon-3d-cube {
+.slic3r-icon-3d-dprint {
     &:before {
-        content: $icon-3d-cube;
+        content: $slic3r-icon-3d-dprint;
     }
 }
 
-.icon-3d-cylinder {
+.slic3r-icon-3d-cone {
     &:before {
-        content: $icon-3d-cylinder;
+        content: $slic3r-icon-3d-cone;
     }
 }
 
-.icon-3d-dodecahedron {
+.slic3r-icon-3d-dodecahedron {
     &:before {
-        content: $icon-3d-dodecahedron;
+        content: $slic3r-icon-3d-dodecahedron;
     }
 }
 
-.icon-3d-icosahedron {
+.slic3r-icon-3d-icosahedron {
     &:before {
-        content: $icon-3d-icosahedron;
+        content: $slic3r-icon-3d-icosahedron;
     }
 }
 
-.icon-3d-next {
+.slic3r-icon-3d-octahedron {
     &:before {
-        content: $icon-3d-next;
+        content: $slic3r-icon-3d-octahedron;
     }
 }
 
-.icon-3d-rotate {
+.slic3r-icon-3d-polyhedron {
     &:before {
-        content: $icon-3d-rotate;
+        content: $slic3r-icon-3d-polyhedron;
     }
 }
 
-.icon-3d-scale {
+.slic3r-icon-3d-torus {
     &:before {
-        content: $icon-3d-scale;
+        content: $slic3r-icon-3d-torus;
     }
 }
 
-.icon-3d-sphere {
+.slic3r-icon-3d-tetrahedron {
     &:before {
-        content: $icon-3d-sphere;
+        content: $slic3r-icon-3d-tetrahedron;
     }
 }
 
-.icon-3d-torus {
+.slic3r-icon-3d-circle {
     &:before {
-        content: $icon-3d-torus;
+        content: $slic3r-icon-3d-circle;
     }
 }
 
-.icon-3d-translate {
+.slic3r-icon-3d-plane {
     &:before {
-        content: $icon-3d-translate;
+        content: $slic3r-icon-3d-plane;
     }
 }
 
-.icon-3d-trash {
+.slic3r-icon-3d-ring {
     &:before {
-        content: $icon-3d-trash;
+        content: $slic3r-icon-3d-ring;
+    }
+}
+
+.slic3r-icon-3d-add {
+    &:before {
+        content: $slic3r-icon-3d-add;
+    }
+}
+
+.slic3r-icon-3d-back {
+    &:before {
+        content: $slic3r-icon-3d-back;
+    }
+}
+
+.slic3r-icon-3d-next {
+    &:before {
+        content: $slic3r-icon-3d-next;
+    }
+}
+
+.slic3r-icon-3d-translate {
+    &:before {
+        content: $slic3r-icon-3d-translate;
+    }
+}
+
+.slic3r-icon-3d-scale {
+    &:before {
+        content: $slic3r-icon-3d-scale;
+    }
+}
+
+.slic3r-icon-3d-rotate {
+    &:before {
+        content: $slic3r-icon-3d-rotate;
+    }
+}
+
+.slic3r-icon-3d-save {
+    &:before {
+        content: $slic3r-icon-3d-save;
+    }
+}
+
+.slic3r-icon-3d-export {
+    &:before {
+        content: $slic3r-icon-3d-export;
+    }
+}
+
+.slic3r-icon-3d-slice {
+    &:before {
+        content: $slic3r-icon-3d-slice;
+    }
+}
+
+.slic3r-icon-3d-trash {
+    &:before {
+        content: $slic3r-icon-3d-trash;
     }
 }

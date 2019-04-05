@@ -4,7 +4,7 @@
  * Created Date: Friday, March 22nd 2019, 5:41:26 pm
  * Author: Omkar Joshi
  * -----
- * Last Modified: Wed Apr 03 2019
+ * Last Modified: Thu Apr 04 2019
  * Modified By: Omkar Joshi
  * -----
  * Copyright (c) 2019 Omkar Joshi
@@ -29,31 +29,33 @@ export class ToolbarComponent implements OnInit {
   private buttons: ButtonConfig[] = [
     { id: 'addButton',
       label: 'Add',
-      icon: ['icon-3d-add'],
+      icon: ['slic3r-icon-3d-add'],
       type: 'circle',
       parent: 'toolbar',
       children: [
-        { id: 'backButton', label: 'Back', icon: ['icon-3d-back'], type: 'circle', parent: 'addButton', isFontAwesomeIcon: false },
-        { id: 'cubeButton', label: 'Cube', icon: ['icon-3d-cube'], type: 'circle', parent: 'addButton', isFontAwesomeIcon: false },
-        { id: 'sphereButton', label: 'Sphere', icon: ['icon-3d-sphere'], type: 'circle', parent: 'addButton', isFontAwesomeIcon: false },
-        { id: 'cylinderButton', label: 'Cylinder', icon: ['icon-3d-cylinder'], type: 'circle', 
+        { id: 'backButton', label: 'Back', icon: ['slic3r-icon-3d-back'], type: 'circle', parent: 'addButton', isFontAwesomeIcon: false },
+        { id: 'cubeButton', label: 'Cube', icon: ['slic3r-icon-3d-cube'], type: 'circle', parent: 'addButton', isFontAwesomeIcon: false },
+        { id: 'sphereButton', label: 'Sphere', icon: ['slic3r-icon-3d-sphere'], type: 'circle',
           parent: 'addButton', isFontAwesomeIcon: false },
-        { id: 'icosahedronButton', label: 'Icosahedron', icon: ['icon-3d-icosahedron'], type: 'circle', 
+        { id: 'cylinderButton', label: 'Cylinder', icon: ['slic3r-icon-3d-cylinder'], type: 'circle',
           parent: 'addButton', isFontAwesomeIcon: false },
-        { id: 'torusButton', label: 'Torus', icon: ['icon-3d-torus'], type: 'circle', parent: 'addButton', isFontAwesomeIcon: false },
-        { id: 'coneButton', label: 'Cone', icon: ['icon-3d-cone'], type: 'circle', parent: 'addButton', isFontAwesomeIcon: false },
-        { id: 'dodecahedronButton', label: 'Dodecahedron', icon: ['icon-3d-dodecahedron'], type: 'circle', 
+        { id: 'icosahedronButton', label: 'Icosahedron', icon: ['slic3r-icon-3d-icosahedron'], type: 'circle',
+          parent: 'addButton', isFontAwesomeIcon: false },
+        { id: 'torusButton', label: 'Torus', icon: ['slic3r-icon-3d-torus'], type: 'circle',
+          parent: 'addButton', isFontAwesomeIcon: false },
+        { id: 'coneButton', label: 'Cone', icon: ['slic3r-icon-3d-cone'], type: 'circle', parent: 'addButton', isFontAwesomeIcon: false },
+        { id: 'dodecahedronButton', label: 'Dodecahedron', icon: ['slic3r-icon-3d-dodecahedron'], type: 'circle', 
           parent: 'addButton', isFontAwesomeIcon: false },
       ],
-      isFontAwesomeIcon: false 
+      isFontAwesomeIcon: false
     },
-    { id: 'translateButton', label: 'Translate', icon: ['icon-3d-translate'], type: 'circle',
+    { id: 'translateButton', label: 'Translate', icon: ['slic3r-icon-3d-translate'], type: 'circle',
       parent: 'toolbar', isFontAwesomeIcon: false, hideCondition: 'this.threeEngineService.selected3DObj === null' },
-    { id: 'scaleButton', label: 'Scale', icon: ['icon-3d-scale'], type: 'circle',
+    { id: 'scaleButton', label: 'Scale', icon: ['slic3r-icon-3d-scale'], type: 'circle',
       parent: 'toolbar', isFontAwesomeIcon: false, hideCondition: 'this.threeEngineService.selected3DObj === null' },
-    { id: 'rotateButton', label: 'Rotate', icon: ['icon-3d-rotate'], type: 'circle',
+    { id: 'rotateButton', label: 'Rotate', icon: ['slic3r-icon-3d-rotate'], type: 'circle',
       parent: 'toolbar', isFontAwesomeIcon: false, hideCondition: 'this.threeEngineService.selected3DObj === null' },
-    { id: 'removeButton', label: 'Delete', icon: ['icon-3d-trash'], type: 'circle', parent: 'toolbar',
+    { id: 'removeButton', label: 'Delete', icon: ['slic3r-icon-3d-trash'], type: 'circle', parent: 'toolbar',
       hideCondition: 'this.threeEngineService.selected3DObj === null', isFontAwesomeIcon: false }
   ];
 
