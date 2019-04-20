@@ -6,6 +6,7 @@
     height: 50px;
     margin-bottom: 10px;
     font-size: 24px;
+    white-space: nowrap;
     cursor: pointer;
     &.toolbutton-oval {
         width: 70px;
@@ -13,10 +14,27 @@
     &.toolbutton-circle {
         width: 50px;
     }
+    &>.toolbutton-label {
+        font-size: 20px;
+        font-weight: bold;
+        padding-left: 20px;
+        display: none;
+    }
     &:focus {
         outline: 0;
     }
     &:active {
         box-shadow: none;
+    }
+    &:hover {
+        &>.toolbutton-label {
+            font-size: 20px;
+            font-weight: bold;
+            padding-left: 20px;
+            display: inline;
+        }
+        &>.toolbutton-icon-span {
+            padding-left: 4px;
+        }
     }
 }

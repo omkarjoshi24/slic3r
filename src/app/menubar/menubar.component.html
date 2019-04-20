@@ -4,7 +4,7 @@
  * Created Date: Friday, March 22nd 2019, 5:36:26 pm
  * Author: Omkar Joshi
  * -----
- * Last Modified: Sun Mar 24 2019
+ * Last Modified: Tue Apr 16 2019
  * Modified By: Omkar Joshi
  * -----
  * Copyright (c) 2019 Omkar Joshi
@@ -15,6 +15,21 @@
  * Date      	By	Comments
  * ----------	---	----------------------------------------------------------
 -->
-<p>
-    menubar works!
-</p>
+<div class="menu-container">
+    <div class="menubutton-list-container">
+        <ul class="menubutton-list">
+            <li *ngFor="let btnConfig of buttons">
+                <app-tool-button [dataid]="btnConfig.id" [label]="btnConfig.label" [icon]="btnConfig.icon" [type]="btnConfig.type" [showLabel]="btnConfig.showLabel" [isFontAwesomeIcon]="btnConfig.isFontAwesomeIcon" [hideCondition]="btnConfig.hideCondition" [togglable]="btnConfig.togglable"
+                    [isToggled]="currentClickedButton === btnConfig.id" (buttonClicked)="toolButtonClicked($event)" (buttonClosed)="toolButtonClosed($event)"></app-tool-button>
+            </li>
+        </ul>
+    </div>
+    <div [class]="activeToggleClass + ' menubutton-children-list-container'">
+        <ul class="menubutton-children-list" *ngIf="chidrenVisible">
+            <li *ngFor="let childBtnConfig of visibleChildren">
+                <app-tool-button [dataid]="childBtnConfig.id" [label]="childBtnConfig.label" [icon]="childBtnConfig.icon" [type]="childBtnConfig.type" [showLabel]="childBtnConfig.showLabel" [isFontAwesomeIcon]="childBtnConfig.isFontAwesomeIcon" [hideCondition]="childBtnConfig.hideCondition"
+                    (buttonClicked)="toolButtonClicked($event)"></app-tool-button>
+            </li>
+        </ul>
+    </div>
+</div>

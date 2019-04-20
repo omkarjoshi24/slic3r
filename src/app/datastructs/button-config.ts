@@ -8,7 +8,7 @@
  * providing button configuration to all toolbar, menubar and bottom bar
  * 
  * -----
- * Last Modified: Wed Apr 03 2019
+ * Last Modified: Mon Apr 15 2019
  * Modified By: Omkar Joshi
  * -----
  * Copyright (c) 2019 Omkar Joshi
@@ -28,4 +28,8 @@ export interface ButtonConfig {
     hideCondition?: string;
     isFontAwesomeIcon?: boolean;
     children?: ButtonConfig[];
+    additionData?: any;
+    showLabel?: boolean;
+    toggleClass?: string;
+    togglable?: boolean;
 }

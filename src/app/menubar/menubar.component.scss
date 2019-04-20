@@ -1,0 +1,31 @@
+.menubutton-list-container {
+    .menubutton-list {
+        list-style-type: none;
+        padding-inline-start: 10px;
+        margin-block-start: 10px;
+        &>li {
+            margin-right: 10px;
+            float: left;
+        }
+    }
+}
+
+.menubutton-children-list-container {
+    position: absolute;
+    top: 70px;
+    .menubutton-children-list {
+        list-style: none;
+        padding-inline-start: 10px;
+        margin-block-start: 10px;
+        &>li {
+            margin-bottom: 2px;
+        }
+        min-width: 130px;
+    }
+    &.add-button-active {
+        left: 0px;
+    }
+    &.edit-button-active {
+        left: 240px;
+    }
+}

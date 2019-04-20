@@ -7,7 +7,7 @@
  * Service to provide Three js functionality
  *
  * -----
- * Last Modified: Mon Apr 01 2019
+ * Last Modified: Fri Apr 19 2019
  * Modified By: Omkar Joshi
  * -----
  * Copyright (c) 2019 Omkar Joshi
@@ -45,11 +45,16 @@ export class ThreeEngineService {
   // public added3DObjs: THREE.Mesh[] = [];
   public helper3DObjs = {};
   public added3DObjs: THREE.Object3D[] = [];
+  public editObj3DPoints = {};
 
   public selected3DObj: THREE.Object3D = null;
+  public selectedEditPoints: THREE.Object3D[] = [];
 
-  private boundTCChanged = event => this.tcChanged();
+  private onMouseDownPosition: THREE.Vector3;
+
+  private boundTCChanged = event => this.tcChanged(event);
   private boundTCDraggingChanged = event => this.tcDraggingChanged(event);
+  private boundTCMouseDown = event => this.tcMouseDown(event);
 
   /**
    * Creates an instance of three engine service.
@@ -88,7 +93,7 @@ export class ThreeEngineService {
     // set renderer size to window's innerWidth and innerHeigth
     this.editorRenderer.setSize(window.innerWidth, window.innerHeight);
     // create editor grid
-    this.editorGrid = new THREE.GridHelper(100, 100);
+    this.editorGrid = new THREE.GridHelper(300, 10);
     this.editorGrid.position.set(0, 0, 0);
     // add editor grid to the scene
     this.editorScene.add(this.editorGrid);
@@ -174,13 +179,45 @@ export class ThreeEngineService {
   }
 
   select3DObject(obj3DToSelect: THREE.Object3D): void {
+    if (obj3DToSelect !== null && this.isSelectionPoint(obj3DToSelect)) {
+      if (this.selectedEditPoints.length > 0) {
+        this.selectedEditPoints.splice(0);
+      }
+      if (this.editorTransformController) {
+        this.editorTransformController.removeEventListener('mouseDown', this.boundTCMouseDown);
+      }
+      this.selectedEditPoints.push(obj3DToSelect);
+      this.startTransform('translate', obj3DToSelect);
+      return;
+    }
+    if (this.selectedEditPoints.length > 0) {
+      this.selectedEditPoints.splice(0);
+    }
     this.editorSelectionBox.visible = false;
     this.stopTransform();
     this.selected3DObj = null;
+    if (this.editObj3DPoints) {
+      let editingObjectUUIDs = Object.keys(this.editObj3DPoints);
+      if (editingObjectUUIDs) {
+        editingObjectUUIDs.forEach((editingObjectUUID) => {
+          if (this.editObj3DPoints[editingObjectUUID]) {
+            let selectionPointUUIDs = Object.keys(this.editObj3DPoints[editingObjectUUID]);
+            if (selectionPointUUIDs) {
+              selectionPointUUIDs.forEach((selectionPointUUID) => {
+                if (this.editObj3DPoints[editingObjectUUID][selectionPointUUID]) {
+                  this.editorScene.remove(this.editObj3DPoints[editingObjectUUID][selectionPointUUID]);
+                }
+              });
+            }
+          }
+        });
+      }
+    }
     this.stopTransform();
     if (obj3DToSelect !== null &&
         obj3DToSelect !== this.editorScene &&
-        !this.isHelperObj(obj3DToSelect)) {
+        !this.isHelperObj(obj3DToSelect) &&
+        !this.isSelectionPoint(obj3DToSelect)) {
           let verificationBox: THREE.Box3 = new THREE.Box3();
           verificationBox.setFromObject(obj3DToSelect);
           if (verificationBox.isEmpty() === false) {
@@ -199,6 +236,49 @@ export class ThreeEngineService {
     return false;
   }
 
+  isSelectionPoint(obj3D: THREE.Object3D): boolean {
+    if (this.editObj3DPoints) {
+      let currentlyEditingObj3Ds = Object.keys(this.editObj3DPoints);
+      if (currentlyEditingObj3Ds) {
+        let totalCurrentlyEditingObj3Ds = currentlyEditingObj3Ds.length;
+        if (totalCurrentlyEditingObj3Ds > 0) {
+          for(let currentlyEditingObj3DsCnt = 0; currentlyEditingObj3DsCnt < totalCurrentlyEditingObj3Ds; currentlyEditingObj3DsCnt++){
+            if (this.editObj3DPoints[currentlyEditingObj3Ds[currentlyEditingObj3DsCnt]] &&
+              this.editObj3DPoints[currentlyEditingObj3Ds[currentlyEditingObj3DsCnt]][obj3D.uuid]) {
+                return true;
+              }
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  getSelectionPointOwner(obj3D: THREE.Object3D): THREE.Object3D {
+    if (this.editObj3DPoints) {
+      let currentlyEditingObj3Ds = Object.keys(this.editObj3DPoints);
+      if (currentlyEditingObj3Ds) {
+        let totalCurrentlyEditingObj3Ds = currentlyEditingObj3Ds.length;
+        if (totalCurrentlyEditingObj3Ds > 0) {
+          for (let currentlyEditingObj3DsCnt = 0; currentlyEditingObj3DsCnt < totalCurrentlyEditingObj3Ds; currentlyEditingObj3DsCnt++){
+            let uuidOfEditingObjAtIndex = currentlyEditingObj3Ds[currentlyEditingObj3DsCnt];
+            if (this.editObj3DPoints[uuidOfEditingObjAtIndex] &&
+                this.editObj3DPoints[uuidOfEditingObjAtIndex][obj3D.uuid]) {
+                let totalAdded3DObjs = this.added3DObjs.length;
+                for (let addedObjCnt = 0; addedObjCnt < totalAdded3DObjs; addedObjCnt++) {
+                  if (this.added3DObjs[addedObjCnt].uuid === uuidOfEditingObjAtIndex) {
+                    let objToReturn: THREE.Object3D =  this.added3DObjs[addedObjCnt];
+                    return objToReturn;
+                  }
+                }
+              }
+          }
+        }
+      }
+    }
+    return null;
+  }
+
   /**
    * Gets 3D mesh obj by type
    * @param type type of 3D mesh
@@ -208,7 +288,7 @@ export class ThreeEngineService {
     // make sure type param is not undefined
     if (type !== undefined && type !== null && type !== '') {
       // variable to hold geometry object
-      let geometry: THREE.BoxGeometry | THREE.Geometry | THREE.SphereGeometry | THREE.BufferGeometry;
+      let geometry: any;
       // variable to holder material
       const material: THREE.MeshBasicMaterial = new THREE.MeshBasicMaterial({color: 0xff0000, wireframe: true});
       // swicth by type
@@ -217,7 +297,28 @@ export class ThreeEngineService {
           geometry = new THREE.BoxBufferGeometry(10, 10, 10); // in case type is cube, create Box Geometry
           break;
         case 'sphere':
-          geometry = new THREE.SphereGeometry(5, 32, 32); // in case type is sphere, create Sphere geometry
+          geometry = new THREE.SphereBufferGeometry(5, 32, 32); // in case type is sphere, create Sphere geometry
+          break;
+        case 'cylinder':
+          geometry = new THREE.CylinderBufferGeometry(5, 5, 20);
+          break;
+        case 'cone':
+          geometry = new THREE.ConeBufferGeometry(5, 20, 32);
+          break;
+        case 'torus':
+          geometry = new THREE.TorusBufferGeometry(10, 3, 30, 200);
+          break;
+        case 'icosahedron':
+          geometry = new THREE.IcosahedronBufferGeometry(10, 0);
+          break;
+        case 'dodecahedron':
+          geometry = new THREE.DodecahedronBufferGeometry(10, 0);
+          break;
+        case 'octahedron':
+          geometry = new THREE.OctahedronBufferGeometry(10, 0);
+          break;
+        case 'tetrahedron':
+          geometry = new THREE.TetrahedronBufferGeometry(10, 0);
           break;
       }
       // return Mesh using geometry and material objects
@@ -241,6 +342,9 @@ export class ThreeEngineService {
     this.editorTransformController.attach(obj3D);
     this.editorScene.add(this.editorTransformController);
     this.editorTransformController.setMode(type);
+    if (this.isSelectionPoint(obj3D)) {
+      this.editorTransformController.addEventListener('mouseDown', this.boundTCMouseDown);
+    }
   }
 
   stopTransform(): void {
@@ -254,6 +358,59 @@ export class ThreeEngineService {
     }
   }
 
+  edit3dObject(obj3d: THREE.Mesh) {
+    let editPoints = this.getVerticesPositions(obj3d.geometry);
+    let existingVertices = {};
+    let xyzName: string = '';
+    editPoints.forEach((vertex) => {
+      let selectionPoint: THREE.Mesh;
+      xyzName = 'xyz' + vertex.vertexPosition.x + vertex.vertexPosition.y + vertex.vertexPosition.z;
+      if (existingVertices[xyzName]) {
+        selectionPoint = existingVertices[xyzName];
+        let existingOriginalVertexPositionIndexInBuffer = selectionPoint.geometry.getAttribute('originalVertexPositionIndexInBuffer').array;
+        if (existingOriginalVertexPositionIndexInBuffer && existingOriginalVertexPositionIndexInBuffer) {
+          let newIndexInBuffer: Float32Array = new Float32Array(existingOriginalVertexPositionIndexInBuffer.length + 1);
+          newIndexInBuffer.set(existingOriginalVertexPositionIndexInBuffer, 0);
+          newIndexInBuffer.set([vertex.vertexPositionIndex], existingOriginalVertexPositionIndexInBuffer.length);
+          let totalIndexBuffers = newIndexInBuffer.length;
+          selectionPoint.geometry.addAttribute('originalVertexPositionIndexInBuffer',
+                                           new THREE.BufferAttribute(newIndexInBuffer, totalIndexBuffers));
+        }
+      } else {
+        selectionPoint = new THREE.Mesh(new THREE.BoxBufferGeometry(0.2, 0.2, 0.2),
+                                        new THREE.MeshBasicMaterial({color: 0xff0000, wireframe: false}));
+        selectionPoint.geometry.addAttribute('originalVertexPosition',
+                                             new THREE.BufferAttribute( new Float32Array([ vertex.vertexPosition.x,
+                                                                                vertex.vertexPosition.y,
+                                                                                vertex.vertexPosition.z ]), 3));
+        selectionPoint.geometry.addAttribute('originalVertexPositionIndexInBuffer',
+                                             new THREE.BufferAttribute(new Float32Array([vertex.vertexPositionIndex]), 1));
+        xyzName = 'xyz' + vertex.vertexPosition.x + vertex.vertexPosition.y + vertex.vertexPosition.z;
+        existingVertices[xyzName] = selectionPoint;
+        vertex.vertexPosition.applyMatrix4(obj3d.matrixWorld);
+        selectionPoint.position.x = vertex.vertexPosition.x;
+        selectionPoint.position.y = vertex.vertexPosition.y;
+        selectionPoint.position.z = vertex.vertexPosition.z;
+        this.editorScene.add(selectionPoint);
+        if (!this.editObj3DPoints[obj3d.uuid]) {
+          this.editObj3DPoints[obj3d.uuid] = {};
+        }
+        this.editObj3DPoints[obj3d.uuid][selectionPoint.uuid] = selectionPoint;
+      }
+    });
+  }
+
+  private getVerticesPositions(geo: THREE.BufferGeometry): {vertexPositionIndex: number, vertexPosition: THREE.Vector3}[] {
+    let vertices: {vertexPositionIndex: number, vertexPosition: THREE.Vector3}[] = [];
+    let positions: Float32Array = geo.getAttribute('position').array;
+    let totalPositions = positions.length / 3;
+    for (let i = 0; i < totalPositions; i++) {
+        let currentVertexPosition = new THREE.Vector3(positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2]);
+        let vertexPositionObj = {vertexPositionIndex: i, vertexPosition: currentVertexPosition};
+        vertices.push(vertexPositionObj);
+    }
+    return vertices;
+  }
   /**
    * Resizes renderer
    */
@@ -269,20 +426,53 @@ export class ThreeEngineService {
     this.editorRenderer.setSize(width, height);
   }
 
-  tcChanged(): void {
-    let obj3D = this.editorTransformController.object;
-    if (obj3D !== undefined) {
+  private tcChanged(event): void {
+    let obj3D: THREE.Object3D = this.editorTransformController.object;
+    if (obj3D !== undefined && !this.isSelectionPoint(obj3D)) {
       this.editorSelectionBox.setFromObject(obj3D);
+    } else if (obj3D !== undefined && this.isSelectionPoint(obj3D) && this.onMouseDownPosition !== undefined) {
+      let selectionPointPosition: THREE.Vector3 = new THREE.Vector3(obj3D.position.x, obj3D.position.y, obj3D.position.z);
+      let selectionPointOwner = this.getSelectionPointOwner(obj3D) as THREE.Mesh;
+      let originalVertexPosition: Float32Array = (obj3D as THREE.Mesh).geometry.getAttribute('originalVertexPosition');
+      let originalVertexPositionIndexInBuffer = (obj3D as THREE.Mesh).geometry.getAttribute('originalVertexPositionIndexInBuffer').array;
+
+      let xDiff = this.onMouseDownPosition.x - selectionPointPosition.x;
+      let yDiff = this.onMouseDownPosition.y - selectionPointPosition.y;
+      let zDiff = this.onMouseDownPosition.z - selectionPointPosition.z;
+
+      if (xDiff !== 0 || yDiff !== 0 || zDiff !== 0) {
+        if (originalVertexPositionIndexInBuffer) {
+          originalVertexPositionIndexInBuffer.forEach((index: number) => {
+            let newX = selectionPointOwner.geometry.attributes.position.array[index] + xDiff;
+            let newY = selectionPointOwner.geometry.attributes.position.array[index + 1] + yDiff;
+            let newZ = selectionPointOwner.geometry.attributes.position.array[index + 2] + zDiff;
+            selectionPointOwner.geometry.attributes.position.set([newX], index);
+            selectionPointOwner.geometry.attributes.position.set([newY], index + 1);
+            selectionPointOwner.geometry.attributes.position.set([newZ], index + 2);
+          });
+        }
+        (obj3D as THREE.Mesh).geometry.attributes.originalVertexPosition = new THREE.BufferAttribute(
+          new Float32Array([this.onMouseDownPosition.x + xDiff,
+                            this.onMouseDownPosition.y + yDiff,
+                            this.onMouseDownPosition.z + zDiff]),
+                          3);
+        // selectionPointOwner.geometry.computeBoundingBox();
+        // selectionPointOwner.geometry.computeBoundingSphere();
+        selectionPointOwner.geometry.attributes.position.needsUpdate = true;
+      }
     }
-    this.doRender();
   }
 
-  tcDraggingChanged(event): void {
+  private tcDraggingChanged(event): void {
     if (this.editorCameraController) {
       this.editorCameraController.enabled = !event.value;
-      console.log('event.value: ' + event.value);
-      console.log('orbit controller enabled? ' + this.editorCameraController.enable);
+    }
+  }
 
+  private tcMouseDown(event): void {
+    let obj3D: THREE.Object3D = this.editorTransformController.object;
+    if (this.isSelectionPoint(obj3D)) {
+      this.onMouseDownPosition = new THREE.Vector3(obj3D.position.x, obj3D.position.y, obj3D.position.z);
     }
   }
 

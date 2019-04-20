@@ -7,7 +7,7 @@
  * Toolbar button To perform various actions on scene
  * 
  * -----
- * Last Modified: Wed Apr 03 2019
+ * Last Modified: Tue Apr 16 2019
  * Modified By: Omkar Joshi
  * -----
  * Copyright (c) 2019 Omkar Joshi
@@ -18,7 +18,7 @@
  * ---------------------	-----	----------------------------------------------------------
  */
 
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, SimpleChange, OnChanges } from '@angular/core';
 import { ThreeEngineService } from '../threeengine/threeengine.service';
 
 @Component({
@@ -26,7 +26,7 @@ import { ThreeEngineService } from '../threeengine/threeengine.service';
   templateUrl: './toolbutton.component.html',
   styleUrls: ['./toolbutton.component.scss']
 })
-export class ToolButtonComponent implements OnInit {
+export class ToolButtonComponent implements OnInit, OnChanges {
   /**
    * label for tool button
    */
@@ -46,6 +46,12 @@ export class ToolButtonComponent implements OnInit {
 
   @Input() isFontAwesomeIcon: boolean;
 
+  @Input() showLabel: boolean;
+
+  @Input() togglable: boolean;
+
+  @Input() isToggled: boolean = false;
+  
   /**
    * condotion for hiding this this button
    */
@@ -55,6 +61,8 @@ export class ToolButtonComponent implements OnInit {
    * @emits button click event emitter trigger when tool button is clicked
    */
   @Output() buttonClicked: EventEmitter<string> = new EventEmitter();
+
+  @Output() buttonClosed: EventEmitter<string> =  new EventEmitter();
 
   /**
    * Creates an instance of tool button component.
@@ -71,11 +79,39 @@ export class ToolButtonComponent implements OnInit {
   isHidden(): boolean {
     if (this.hideCondition !== undefined && this.hideCondition !== null && eval(this.hideCondition) === true) {
       return true;
+      this.isToggled = false;
     }
     return false;
   }
 
+  ngOnChanges(changes: {[propKey: string]: SimpleChange}): void {
+    const propName = 'isToggled';
+    let changedProp = changes[propName];
+    if (changedProp) {
+      let newVal = JSON.stringify(changedProp.currentValue);
+      let preVal = JSON.stringify(changedProp.previousValue);
+      if (!changedProp.isFirstChange()) {
+        if (newVal !== preVal) {
+          if (!newVal || newVal === 'false') {
+            this.buttonClosed.emit(this.dataid);
+          } else {
+            this.buttonClicked.emit(this.dataid);
+          }
+        }
+      }
+    }
+  }
+
   onButtonClicked() {
-    this.buttonClicked.emit(this.dataid);
+    if (this.togglable) {
+      if (!this.isToggled) {
+        this.buttonClicked.emit(this.dataid);
+      } else {
+        this.buttonClosed.emit(this.dataid);
+      }
+      this.isToggled = !this.isToggled;
+    } else {
+      this.buttonClicked.emit(this.dataid);
+    }
   }
 }

@@ -7,7 +7,7 @@
  * Template for Toolbar Button coponent
  * 
  * -----
- * Last Modified: Wed Apr 03 2019
+ * Last Modified: Sat Apr 06 2019
  * Modified By: Omkar Joshi
  * -----
  * Copyright (c) 2019 Omkar Joshi
@@ -21,6 +21,7 @@
 <div [hidden]="isHidden()">
     <button class="shadow-button" (click)="onButtonClicked()" [ngClass]="{'toolbutton-oval': type === 'oval', 'toolbutton-circle': type === 'circle'}">
         <fa-icon [icon]="icon" *ngIf="isFontAwesomeIcon"></fa-icon>
-        <span [class]="icon[0]" *ngIf="!isFontAwesomeIcon"></span>
+        <span [class]="showLabel ? icon[0] + '  toolbutton-icon-span' : icon[0] + ' toolbutton-icon-span-no-label'" *ngIf="!isFontAwesomeIcon"></span>
+        <span class="toolbutton-label" *ngIf="showLabel">{{label}}</span>
     </button>
 </div>
